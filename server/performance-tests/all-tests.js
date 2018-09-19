@@ -6,7 +6,7 @@ mongoose.connect(config.dbUri) // connect to database
 	.then(() => {
 		console.log('Perf testing started...');
 
-		doPerfTests(1000).then((results) => {
+		doPerfTests(config.performanceTests.delay).then((results) => {
 			console.log('Perf testing ended.');
 		});
 	});

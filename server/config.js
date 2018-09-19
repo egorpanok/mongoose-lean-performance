@@ -5,6 +5,7 @@ module.exports = {
 	performanceTests: {
 		min: 100,
 		max: 10000,
-		step: 100
+		step: 20,
+		delay: 5000
 	}
 };
