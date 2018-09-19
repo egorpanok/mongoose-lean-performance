@@ -4,9 +4,10 @@ const PostPerfTests = require('./post.performance');
 
 mongoose.connect(config.dbUri) // connect to database
 	.then(() => {
+		console.log('Perf testing started...');
 
-		doPerfTests().then((results) => {
-			console.log('Results');
+		doPerfTests(1000).then((results) => {
+			console.log('Perf testing ended.');
 		});
 	});
 
@@ -20,30 +21,37 @@ function doPefTest(postsNumber) {
 			return PostPerfTests.getPostsLeanPerformanceTest(postsNumber);
 		}).then((res) => {
 			result.leanTime = res.ms;
+			console.log(`Posts: ${result.postsNumber} | Regular: ${result.regularTime} | Lean: ${result.leanTime}`);
 			return resolve(result);
 		});
 	});
 }
 
-function doPerfTests() {
+function doPerfTests(delay) {
 	return new Promise((resolve, reject) => {
 		let results = [],
 			counter = 0,
-			endCounterState = Math.floor((config.performanceTests.max - config.performanceTests.min) / config.performanceTests.step);
+			currentStep,
+			steps = Math.floor((config.performanceTests.max - config.performanceTests.min) / config.performanceTests.step);
 
-		for (let i = config.performanceTests.min; i <= config.performanceTests.max; i += config.performanceTests.step) {
-			doPefTest(i).then((res) => {
-				counter++;
-				console.log(`Posts: ${res.postsNumber}. Regular: ${res.regularTime}. Lean: ${res.leanTime}`);
-				results.push(res);
+		for (let i = 0; i <= steps; i++) {
+			currentStep = config.performanceTests.min + i * config.performanceTests.step;
 
-				if (counter > endCounterState) {
+			((cs) => {
+				setTimeout(() => {
+					doPefTest(cs).then((res) => {
+						counter++;
+						results.push(res);
 
-					results.sort((a, b) => { return a.postsNumber - b.postsNumber; });
+						if (counter > steps) {
 
-					return resolve(results);
-				}
-			});
+							results.sort((a, b) => { return a.postsNumber - b.postsNumber; });
+
+							return resolve(results);
+						}
+					});
+				}, delay * i);
+			})(currentStep);
 		}
 	});
 }
