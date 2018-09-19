@@ -4,7 +4,7 @@ module.exports = {
 	postsNumber: 10000,
 	performanceTests: {
 		min: 100,
-		max: 5000,
+		max: 10000,
 		step: 100
 	}
 };
