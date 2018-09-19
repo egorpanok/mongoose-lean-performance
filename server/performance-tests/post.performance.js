@@ -1,28 +1,36 @@
 const PostAccessor = require('./../accessors/post.accessor');
 const clock = require('./../helpers/clock');
 
-function getPostsPerformanceTest() {
+function getPostsPerformanceTest(postsNumber) {
 
 	return new Promise((resolve, reject) => {
 		const perf = clock.clock();
 
-		PostAccessor.getPosts().then((posts) => {
+		PostAccessor.getPosts(postsNumber).then((posts) => {
 			const ms = clock.clock(perf);
 
-			return resolve(`Getting ${posts.length} posts took ${ms} ms`);
+			return resolve({
+				message: `Getting ${posts.length} posts took ${ms} ms`,
+				postsNumber: posts.length,
+				ms: ms
+			});
 		});
 	});
 }
 
-function getPostsLeanPerformanceTest() {
+function getPostsLeanPerformanceTest(postsNumber) {
 
 	return new Promise((resolve, reject) => {
 		const perf = clock.clock();
 
-		PostAccessor.getPostsLean().then((posts) => {
+		PostAccessor.getPostsLean(postsNumber).then((posts) => {
 			const ms = clock.clock(perf);
 
-			return resolve(`Getting ${posts.length} lean posts took ${ms} ms`);
+			return resolve({
+				message: `Getting ${posts.length} posts took ${ms} ms`,
+				postsNumber: posts.length,
+				ms: ms
+			});
 		});
 	});
 }

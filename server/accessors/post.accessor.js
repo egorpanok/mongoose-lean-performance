@@ -1,16 +1,16 @@
 const Post = require('../models/post.model');
 
-function getPosts() {
+function getPosts(postsNumber) {
 	return new Promise((resolve, reject) => {
-		Post.find({}, (err, posts) => {
+		Post.find({}).limit(postsNumber).exec((err, posts) => {
 			return resolve(posts);
 		});
 	});
 }
 
-function getPostsLean() {
+function getPostsLean(postsNumber) {
 	return new Promise((resolve, reject) => {
-		Post.find({}).lean().exec((err, posts) => {
+		Post.find({}).limit(postsNumber).lean().exec((err, posts) => {
 			return resolve(posts);
 		});
 	});
